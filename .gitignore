@@ -1,0 +1,12 @@
+__pycache__/*
+modules/__pycache__/*
+VOSK/*
+pretrained_models/*
+saved_models/*
+.env
+temp/*
+transcriptions/*
+spleeter/*
+logs/*
+.vscode/*
+modules/__pycache__/*
