@@ -1,15 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from dotenv import load_dotenv
-import os
+from decouple import config
 
-load_dotenv()
 
 app= Flask (__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}},supports_credentials=True)
 
-app.config['SQLALCHEMY_DATABASE_URI']=os.getenv('DATABASE_URI','postgresql://postgres:success@localhost:5432/Flask_db')
+app.config['SQLALCHEMY_DATABASE_URI']=config('DATABASE_URI','postgresql://postgres:postgres@db:5432/Flask_db')
 app.config['SQLALCHEMY_TRACK_DATABASE']=False
 
 db=SQLAlchemy(app)

@@ -77,35 +77,55 @@
 #     driver: bridge
 
 
-version: '3.1'
+# version: '3.1'
 
+# services:
+#   frontend:
+#     image: user-info:latest
+#     ports:
+#       - "4000:3000"
+
+#   backend:
+#     image: flask:latest
+#     build: .
+#     ports:
+#       - "5000:5000"
+#     depends_on:
+#       - postgres
+
+#   postgres:
+#     image: postgres:latest
+#     environment:
+#       POSTGRES_USER: ${DB_USER}
+#       POSTGRES_PASSWORD: ${DB_PASSWORD}
+#       POSTGRES_DB: ${DB_NAME}
+#     env_file:
+#       - .env
+#     ports:
+#       - "5432:5432"
+
+
+
+
+
+version: '3'
 services:
-  frontend:
-    image: user-info:latest
-    ports:
-      - "4000:3000"
-
-  backend:
-    image: flask:latest
+  web:
     build: .
     ports:
       - "5000:5000"
-    depends_on:
-      - postgres
-
-  postgres:
-    image: postgres:latest
+    volumes:
+      - .:/app
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-    env_file:
-      - .env
+      - FLASK_ENV=development
+      - DATABASE_URI=postgresql://postgres:postgres@db:5432/Flask_db
+    depends_on:
+      - db
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: Flask_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
-
-
-
-
-
-  
