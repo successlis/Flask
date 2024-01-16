@@ -1,0 +1,111 @@
+# # A Docker Compose must always start with the version tag.
+# # We use '3' because it's the last version.
+# version: "3"
+ 
+# # You should know that Docker Compose works with services.
+# # 1 service = 1 container.
+# # For example, a service, a server, a client, a database...
+# # We use the keyword 'services' to start to create services.
+# services:
+#   # The name of our service is "database"
+#   # but you can use the name of your choice.
+#   # Note: This may change the commands you are going to use a little bit.
+#   database:
+#     # Official Postgres image from DockerHub
+#     image: "postgres:15"
+ 
+#     # By default, a Postgres database is running on the 5432 port.
+#     # If we want to access the database from our computer (outside the container),
+#     # we must share the port with our computer's port.
+#     # The syntax is [port we want on our machine]:[port we want to retrieve in the container]
+#     # Note: You are free to change your computer's port,
+#     # but take into consideration that it will change the way
+#     # you are connecting to your database.
+#     ports:
+#       - "5432:5432"
+#     # volumes:
+#     #   - ${CONFIG}/pgdata/:/var/lib/postgresql/data
+ 
+#     environment:
+#       POSTGRES_USER: ${DB_USER} # The PostgreSQL user (useful to connect to the database)
+#       POSTGRES_PASSWORD: ${DB_PASSWORD} # The PostgreSQL password (useful to connect to the database)
+#       POSTGRES_DB: ${DB_NAME} # The PostgreSQL default database (automatically created at first launch)
+#       PGDATA: /var/lib/postgresql/data/pgdata
+#     env_file: .env
+#   backend:
+#     image: ybp/backend:${TAG}
+#     # volumes:
+#     #   - ./:/app #Synchronise docker container with local change.
+#     build:
+#       context: ./
+#       dockerfile: Dockerfile
+#       # args:
+#       #   USER_ID: ${USER_ID}
+#       #   GROUP_ID: ${GROUP_ID}
+#     # command: bash -c "
+#     #   sleep 7
+#     #   && python manage.py makemigrations authuser
+#     #   && python manage.py makemigrations fileshare
+#     #   && python manage.py migrate
+#     #   && python manage.py loaddata fixtures/screen.json
+#     #   && python manage.py loaddata fixtures/permission.json
+#     #   && python manage.py loaddata fixtures/social_providers.json
+#     #   && python manage.py superuser
+#     #   && python manage.py collectstatic --noinput
+#     #   && gunicorn --bind 0.0.0.0:8000 core.asgi -w 2 -k uvicorn.workers.UvicornWorker & celery -A core.celery worker  --pool=gevent --concurrency=4 -l INFO"
+#     ports:
+#       - 8000:8000
+#     env_file: .env
+#   #   depends_on:
+#   #     - rabbit
+#   # rabbit:
+#   #   hostname: rabbit
+#   #   image: rabbitmq:3.6.9
+#   #   environment:
+#   #     - RABBITMQ_DEFAULT_USER=guest
+#   #     - RABBITMQ_DEFAULT_PASS=guest
+#   #   ports:
+#   #     - "5672:5672"
+#   #     - "15672:15672"
+
+#   # frontend:
+#   #   image:
+
+# networks:
+#   default:
+#     external: false
+#     driver: bridge
+
+
+version: '3.1'
+
+services:
+  frontend:
+    image: user-info:latest
+    ports:
+      - "4000:3000"
+
+  backend:
+    image: flask:latest
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+
+
+
+
+
+  
